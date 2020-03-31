@@ -4,26 +4,27 @@ const keyboardButtons = {
         'tab Q W E R T Y U I O P [ ] \\',
         'capslock A S D F G H J K L ; \' enter',
         'shiftleft Z X C V B N M , . / shiftright',
-        'Z X C V B space M < > .com @'
+        'fn ctrlleft altleft metaleft space metaright altright ctrlright'
     ],
     'shift': [
         '~ ! @ # $ % ^ & * ( ) _ + backspace',
         'tab Q W E R T Y U I O P { } |',
         'capslock A S D F G H J K L : " enter',
         'shiftleft Z X C V B N M < > ? shiftright',
-        'Z X C V B space M < > .com @'
+        'fn ctrl alt win space win alt ctrl'
     ]
 }
 
 function getKeyCodeList(key) {
   let obj = {
     backspace: 8,
+    space: 32,
     tab: 9,
     enter: 13,
     shiftleft: 16,
     shiftright: 16,
     ctrlleft: 17,
-    ctrlrigght: 17,
+    ctrlright: 17,
     altleft: 18,
     altright: 18,
     pause: 19,
@@ -75,8 +76,8 @@ function getKeyCodeList(key) {
     x: 88,
     y: 89,
     z: 90,
-    metaleft: 91,
-    metaright: 92,
+    winleft: 91,
+    winright: 92,
     select: 93,
     numpad0: 96,
     numpad1: 97,
@@ -107,17 +108,17 @@ function getKeyCodeList(key) {
     f12: 123,
     numlock: 144,
     scrolllock: 145,
-    semicolon: 186,
+    ':': 186,
     '=': 187,
     ',': 188,
     '-': 189,
-    period: 190,
-    slash: 191,
+    ".": 190,
+    "/": 191,
     '`': 192,
     '[': 219,
     '\\': 220,
     ']': 221,
-    quote: 222
+    "'": 222
   };
 
   return obj[key];
