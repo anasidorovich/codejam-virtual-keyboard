@@ -1,18 +1,32 @@
 const keyboardButtons = {
-    'default': [
+    'defaultLayout': [
         '` 1 2 3 4 5 6 7 8 9 0 - = backspace',
         'tab Q W E R T Y U I O P [ ] \\',
         'capslock A S D F G H J K L ; \' enter',
         'shiftleft Z X C V B N M , . / shiftright',
         'fn ctrlleft altleft metaleft space metaright altright ctrlright'
     ],
-    'shift': [
+    'shiftLayout': [
         '~ ! @ # $ % ^ & * ( ) _ + backspace',
         'tab Q W E R T Y U I O P { } |',
         'capslock A S D F G H J K L : " enter',
         'shiftleft Z X C V B N M < > ? shiftright',
         'fn ctrl alt win space win alt ctrl'
-    ]
+    ],
+    'defaultRuLayout': [
+        '` 1 2 3 4 5 6 7 8 9 0 - = backspace',
+        'tab Й Ц У К Е Н Г Ш Щ З Х Ъ \\',
+        'capslock Ф Ы В А П Р О Л Д Ж Э enter',
+        'shiftleft Я Ч С М И Т Ь Б Ю . shiftright',
+        'fn ctrlleft altleft metaleft space metaright altright ctrlright'
+     ],
+    'shiftRuLayout': [
+          'ё ! " № ; % : ? * ( ) _ + backspace',
+          'tab Й Ц У К Е Н Г Ш Щ З Х Ъ /',
+          'capslock Ф Ы В А П Р О Л Д Ж Э enter',
+          'shiftleft Я Ч С М И Т Ь Б Ю , shiftright',
+          'fn ctrl alt win space win alt ctrl'
+     ]
 }
 
 function getKeyCodeList(key) {
@@ -76,6 +90,39 @@ function getKeyCodeList(key) {
     x: 88,
     y: 89,
     z: 90,
+    й: 81,
+    й: 81,
+    ц: 87,
+    у: 69,
+    к: 82,
+    е: 84,
+    н: 89,
+    г: 85,
+    ш: 73,
+    щ: 79,
+    з: 80,
+    х: 219,
+    ъ: 221,
+    ф: 65,
+    ы: 83,
+    в: 68,
+    а: 70,
+    п: 71,
+    р: 72,
+    о: 74,
+    л: 75,
+    д: 76,
+    ж: 186,
+    э: 222,
+    я: 90,
+    ч: 88,
+    с: 67,
+    м: 86,
+    и: 66,
+    т: 78,
+    ь: 77,
+    б: 188,
+    ю: 190,
     winleft: 91,
     winright: 92,
     select: 93,

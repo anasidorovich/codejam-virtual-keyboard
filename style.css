@@ -1,164 +1,232 @@
 body {
+  margin: 0;
+  padding: 0;
+
   background-color: #000000;
+  background-repeat: no-repeat;
+  background-size: cover;
 }
 
 h1 {
-  text-align: center;
+  padding: 1em 0.5em 0;
+
   font-size: 1.8em;
   font-family: monospace;
-  padding: 0.7em;
-  color: #382C23;
+  text-align: center;
+  color: #ffffff;
+}
+
+p {
+  padding-bottom: 1em;
+
+  font-size: 1em;
+  font-family: monospace;
+  text-align: center;
+  color: #ffffff;
 }
 
 .textarea {
-    display: block;
-    width: 700px;
-    height: 300px;
-    margin: 0 auto 20px;
-    padding: 10px;
-    font-size: 18px;
-    color: #382C23;
-    outline-color: #FAC7E0;
+  display: block;
+  width: 39em;
+  height: 10em;
+  margin: 0 auto 25px;
+  padding: 10px;
+
+  font-size: 18px;
+  color: #382c23;
+
+  border-radius: 10px;
+  outline: none;
+  outline-color: #fac7e0;
+
+  resize: none;
 }
 
 .keyboard {
-    text-align: center;
-    font-size: 14px;
-    font-family: sans-serif;
+  display: none;
+  flex-direction: column;
+  align-items: center;
+  width: 55.1em;
+  height: auto;
+  margin: auto;
+  padding: 30px 15px;
+
+  font: 28px arial;
+  font-size: 14px;
+  text-align: center;
+
+  background: #272b2c;
+  border-radius: 10px;
+  box-shadow: 0 40px 45px rgba(0, 0, 0, 0.4);
+}
+
+.keyboard.on {
+  display: flex;
 }
 
 .keyboard__row {
-    display: inline-block;
-    height: 3em;
-    margin: 0.2em;
+  display: inline-block;
+  height: 3em;
+  margin: 0.2em;
 }
 
 .keyboard__row--h1 {
-    height: 1.7em;
-    line-height: 1.4em;
+  height: 1.7em;
+
+  line-height: 1.4em;
 }
 
 .keyboard__row--h3 {
-    height: 3.3em;
+  height: 3.3em;
 }
 
 .keyboard__row > * {
-    position: relative;
-    background: #ffffff;
-    text-align: center;
-    color: #000000;
-    float: left;
-    border-radius: 0.3em;
-    margin: 0.2em;
-    padding: 0.2em;
-    width: 3.3em;
-    height: 100%;
-    box-sizing: border-box;
-    cursor: pointer;
-    -webkit-user-select: none;
-    border: 1px solid #F992C2;
-    box-shadow: 0 0.2em 0 0.05em #EE559C;
-    border-bottom-color: #FAC7E0;
+  position: relative;
+
+  float: left;
+  box-sizing: border-box;
+  width: 3.3em;
+  height: 100%;
+  margin: 0.2em;
+  padding: 0.2em;
+
+  text-align: center;
+  color: #71d4fe;
+
+  background: #ffffff;
+  background: #2f3336;
+  border-radius: 1em;
+  box-shadow: 0 3px 3px rgba(0, 0, 0, 0.7);
+  cursor: pointer;
+
+  -webkit-user-select: none;
 }
 
+.keyboard__row > *:hover {
+  text-shadow: 1px 2px 60px #00bcd4, 0 0 60px rgba(0, 188, 212, 0.9), 0 0 60px rgba(0, 188, 212, 0.9), 10px 10px 60px rgba(0, 188, 212, 0.9);
+
+  background: #2f3336;
+  border: 1px solid #00d7c3;
+  box-shadow: 0 0 10px 0 #00d7c3 inset, 0 0 10px 1px #00d7c3;
+  cursor: pointer;
+}
+
+
+.keyboard__row > * span {
+  padding: 0.3em;
+}
+
+.keyboard__row > *:active {
+  transform: scale(0.9);
+}
+
+
 .keyboard__row--h1 > div {
-    width: 3.5em;
+  width: 3.5em;
 }
 
 .keyboard__row > div[data-selected] {
-    background: #FAC7E0;
+  border: 1px solid #00d7c3;
+  box-shadow: 0 0 10px 0 #00d7c3 inset, 0 0 10px 1px #00d7c3;
 }
 
 .keyboard__row > div[data-pressed],
 .keyboard__row > div:active {
-    background: #FAC7E0;
-    color: #000000;
-    position: relative;
-    top: 0.2em;
-    box-shadow: 0 0 0 0.05em #F992C2;
+  position: relative;
+  top: 0.2em;
+
+  border: 1px solid #00d7c3;
+  box-shadow: 0 0 10px 0 #00d7c3 inset, 0 0 10px 1px #00d7c3;
+}
+
+.key--double > div[data-layout] {
+  display: none;
 }
 
 .key--w3 {
-    width: 4.6em;
+  width: 4.6em;
 }
 
 .key--w4 {
-    width: 6em;
+  width: 6em;
 }
 
 .key--w5 {
-    width: 6.5em;
+  width: 6.5em;
 }
 
 .key--w6 {
-    width: 8.4em;
+  width: 8.4em;
 }
 
 .key--space {
-    width: 18em;
-    background-image: url(space.png);
-    background-color: #ffffff;
-    background-repeat: no-repeat;
-    background-size: contain;
+  width: 18em;
 }
 
 .key--double > * {
-    padding-top: 0.1em;
+  padding-top: 0.1em;
 }
 
 .key--letter {
-    line-height: 2.8em;
+  line-height: 2.8em;
 }
 
 .key--bottom-left > * {
-    position: absolute;
-    text-align: left;
-    bottom: 0.4em;
-    left: 0.4em;
+  position: absolute;
+  bottom: 0.4em;
+  left: 0.4em;
+
+  text-align: left;
 }
 
 .key--bottom-right > * {
-    position: absolute;
-    text-align: right;
-    bottom: 0.4em;
-    right: 0.4em;
+  position: absolute;
+  right: 0.4em;
+  bottom: 0.4em;
+
+  text-align: right;
 }
 
 .key--fn > * {
-    font-size: 0.6em;
-    line-height: 1em;
-    padding-top: 1.2em;
-    padding-right: 0.2em;
-    text-align: right;
-    float: right;
+  float: right;
+  padding-top: 1.2em;
+  padding-right: 0.2em;
+
+  font-size: 0.6em;
+  line-height: 1em;
+  text-align: right;
 }
 
 .key--word > * {
-    font-size: 0.8em;
+  font-size: 0.8em;
+}
 
+.key--letter.keyword_upper {
+  text-transform: uppercase;
 }
 
 .key--arrow--tall {
-    width: 3em;
+  width: 3em;
 }
 
 .key--arrow--tall > *,
 .key--arrow > * {
-    font-size: 0.5em;
-    line-height: 3em;
+  font-size: 0.5em;
+  line-height: 3em;
 }
 
 .key--arrow {
-    height: 1.8em;
-    width: 3.1em;
-    margin-top: 1.7em;
-    line-height: 0.5em;
+  width: 3.1em;
+  height: 1.8em;
+  margin-top: 1.7em;
+
+  line-height: 0.5em;
 }
 
 .key--arrow--tall > * {
-    padding-top: 0.2em;
+  padding-top: 0.2em;
 }
 
 .keyboard > .keyboard__row {
-    text-align: center;
+  text-align: center;
 }
