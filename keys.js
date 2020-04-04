@@ -154,7 +154,7 @@ function getKeyCodeList(key) {
     f12: 123,
     numlock: 144,
     scrolllock: 145,
-    ':': 186,
+    ';': 186,
     '=': 187,
     ',': 188,
     '-': 189,
