@@ -1,36 +1,36 @@
 const keyboardButtons = {
-    'defaultLayout': [
-        '` 1 2 3 4 5 6 7 8 9 0 - = backspace',
-        'tab Q W E R T Y U I O P [ ] \\',
-        'capslock A S D F G H J K L ; \' enter',
-        'shiftleft Z X C V B N M , . / shiftright',
-        'fn ctrlleft altleft metaleft space metaright altright ctrlright'
-    ],
-    'shiftLayout': [
-        '~ ! @ # $ % ^ & * ( ) _ + backspace',
-        'tab Q W E R T Y U I O P { } |',
-        'capslock A S D F G H J K L : " enter',
-        'shiftleft Z X C V B N M < > ? shiftright',
-        'fn ctrl alt win space win alt ctrl'
-    ],
-    'defaultRuLayout': [
-        '` 1 2 3 4 5 6 7 8 9 0 - = backspace',
-        'tab Й Ц У К Е Н Г Ш Щ З Х Ъ \\',
-        'capslock Ф Ы В А П Р О Л Д Ж Э enter',
-        'shiftleft Я Ч С М И Т Ь Б Ю . shiftright',
-        'fn ctrlleft altleft metaleft space metaright altright ctrlright'
-     ],
-    'shiftRuLayout': [
-          'ё ! " № ; % : ? * ( ) _ + backspace',
-          'tab Й Ц У К Е Н Г Ш Щ З Х Ъ /',
-          'capslock Ф Ы В А П Р О Л Д Ж Э enter',
-          'shiftleft Я Ч С М И Т Ь Б Ю , shiftright',
-          'fn ctrl alt win space win alt ctrl'
-     ]
-}
+  defaultLayout: [
+    '` 1 2 3 4 5 6 7 8 9 0 - = backspace',
+    'tab Q W E R T Y U I O P [ ] \\',
+    'capslock A S D F G H J K L ; \' enter',
+    'shiftleft Z X C V B N M , . / shiftright',
+    'fn ctrlleft altleft metaleft space metaright altright ctrlright',
+  ],
+  shiftLayout: [
+    '~ ! @ # $ % ^ & * ( ) _ + backspace',
+    'tab Q W E R T Y U I O P { } |',
+    'capslock A S D F G H J K L : " enter',
+    'shiftleft Z X C V B N M < > ? shiftright',
+    'fn ctrl alt win space win alt ctrl',
+  ],
+  defaultRuLayout: [
+    '` 1 2 3 4 5 6 7 8 9 0 - = backspace',
+    'tab Й Ц У К Е Н Г Ш Щ З Х Ъ \\',
+    'capslock Ф Ы В А П Р О Л Д Ж Э enter',
+    'shiftleft Я Ч С М И Т Ь Б Ю . shiftright',
+    'fn ctrlleft altleft metaleft space metaright altright ctrlright',
+  ],
+  shiftRuLayout: [
+    'ё ! " № ; % : ? * ( ) _ + backspace',
+    'tab Й Ц У К Е Н Г Ш Щ З Х Ъ /',
+    'capslock Ф Ы В А П Р О Л Д Ж Э enter',
+    'shiftleft Я Ч С М И Т Ь Б Ю , shiftright',
+    'fn ctrl alt win space win alt ctrl',
+  ],
+};
 
 function getKeyCodeList(key) {
-  let obj = {
+  const obj = {
     backspace: 8,
     space: 32,
     tab: 9,
@@ -90,7 +90,6 @@ function getKeyCodeList(key) {
     x: 88,
     y: 89,
     z: 90,
-    й: 81,
     й: 81,
     ц: 87,
     у: 69,
@@ -159,13 +158,13 @@ function getKeyCodeList(key) {
     '=': 187,
     ',': 188,
     '-': 189,
-    ".": 190,
-    "/": 191,
+    '.': 190,
+    '/': 191,
     '`': 192,
     '[': 219,
     '\\': 220,
     ']': 221,
-    "'": 222
+    "'": 222,
   };
 
   return obj[key];

@@ -6,6 +6,43 @@ let capsPressed;
 let shiftPressed;
 let keyLetters;
 
+HTMLTextAreaElement.prototype.getCaretPosition = function () {
+  return this.selectionStart || 0;
+};
+
+HTMLTextAreaElement.prototype.setCaretPosition = function (position) {
+  if (position > this.value.length || position < 0) {
+    return;
+  }
+  this.selectionStart = position;
+  this.selectionEnd = position;
+  this.focus();
+};
+
+HTMLTextAreaElement.prototype.hasSelection = function () {
+  if (this.selectionStart === this.selectionEnd) {
+    return false;
+  }
+  return true;
+};
+
+HTMLTextAreaElement.prototype.insertValue = function (start, finish) {
+  this.value = this.value.substring(0, start) + this.value.substring(finish, this.value.length);
+  this.setCaretPosition(start);
+};
+
+HTMLTextAreaElement.prototype.setValue = function (value) {
+  const position = this.getCaretPosition();
+  if (position < this.value.length) {
+    this.value = this.value.substring(0, position) + value
+               + this.value.substring(position, this.value.length);
+    this.setCaretPosition(position + value.length);
+  } else {
+    this.value += value;
+    this.setCaretPosition(this.value.length);
+  }
+};
+
 function getKey(e) {
   const { location } = e;
   let selector;
@@ -13,10 +50,7 @@ function getKey(e) {
     selector = [`.keyboard.on [data-key="${e.keyCode}-R"]`];
   } else {
     const code = e.keyCode || e.which;
-    selector = [
-      `.keyboard.on [data-key="${code}"]`,
-      `.keyboard.on [data-char*="${encodeURIComponent(String.fromCharCode(code))}"]`,
-    ].join(',');
+    selector = [`.keyboard.on [data-key="${code}"]`];
   }
   return document.querySelector(selector);
 }
@@ -52,28 +86,49 @@ function keyDoubleClick(e) {
     return;
   }
   if (shiftPressed) {
-    inputArea.value += element.children[0].innerText;
+    inputArea.setValue(element.children[0].innerText);
   } else {
-    inputArea.value += element.children[1].innerText;
+    inputArea.setValue(element.children[1].innerText);
   }
 }
 
-function keyLetterClick(e) {
-  const element = e.currentTarget || e;
-  if (e.button === 2) {
-    return;
+function keyLetterClick(element) {
+  inputArea.setValue(element.innerText);
+}
+
+function keyLetterClickEventHandler(e) {
+  e.preventDefault();
+  if (e.button !== 2) {
+    keyLetterClick(e.currentTarget);
   }
-  inputArea.value += element.innerText;
 }
 
 function keyShiftClick(e) {
   if (e && e.button === 2) {
     return;
   }
-
   keyLetters.forEach((letter) => {
     letter.classList.toggle('keyword_upper');
   });
+}
+
+function keyArrowClick(element) {
+  const keyCode = parseInt(element.dataset.key, 10);
+  const position = inputArea.getCaretPosition();
+  if (keyCode === getKeyCodeList('arrowleft')) {
+    inputArea.setCaretPosition(inputArea.hasSelection() ? position : position - 1);
+  } else if (keyCode === getKeyCodeList('arrowright')) {
+    inputArea.setCaretPosition(inputArea.hasSelection() ? inputArea.selectionEnd : position + 1);
+  } else {
+    inputArea.setValue(element.innerText);
+  }
+}
+
+function keyArrowClickEventHandler(e) {
+  e.preventDefault();
+  if (e.button !== 2) {
+    keyArrowClick(e.currentTarget);
+  }
 }
 
 function keyClick(e, capsKey) {
@@ -96,24 +151,20 @@ function keyClick(e, capsKey) {
   }
   if (element.classList.contains('key--backspace')) {
     const start = inputArea.selectionStart;
-    const finish = inputArea.selectionEnd;
-    if (start === finish) {
-      const beforeStart = start - 1;
-      inputArea.value = inputArea.value.slice(0, beforeStart) + inputArea.value.slice(finish);
-      inputArea.setSelectionRange(beforeStart, beforeStart, 'backward');
+    if (inputArea.hasSelection()) {
+      inputArea.insertValue(start, inputArea.selectionEnd);
     } else {
-      inputArea.value = inputArea.value.slice(0, start) + inputArea.value.slice(finish);
+      inputArea.insertValue(start - 1, inputArea.getCaretPosition());
     }
   }
   if (element.classList.contains('key--enter')) {
-    inputArea.value += '\n';
+    inputArea.setValue('\n');
   }
   if (element.classList.contains('key--tab')) {
-    inputArea.value += '\t';
+    inputArea.setValue('\t');
   }
   if (element.classList.contains('key--space')) {
-    inputArea.value += ' ';
-    //inputArea.setSelectionRange(1, 1, 'backward');
+    inputArea.setValue(' ');
   }
   return true;
 }
@@ -124,9 +175,9 @@ function keyWordClick(e) {
 }
 
 function buildBody() {
-  keyboards[0] = document.createElement('div'); // keyboard
+  keyboards[0] = document.createElement('div');
   keyboards[0].className = `keyboard keyboard_en ${currentLanguage === 'en' ? 'on' : ''}`;
-  keyboards[1] = document.createElement('div'); // keyboard
+  keyboards[1] = document.createElement('div');
   keyboards[1].className = `keyboard keyboard_ru ${currentLanguage === 'ru' ? 'on' : ''}`;
   const wrapper = document.createElement('div');
   wrapper.className = 'wrapper';
@@ -136,20 +187,23 @@ function buildBody() {
   return wrapper;
 }
 
-function buildKey(keyValue, className, innerHTML, charValue) {
+function buildKey(keyValue, className, innerHTML) {
   const keyCode = getKeyCodeList(keyValue);
   const key = document.createElement('div');
   key.className = className;
   key.innerHTML = innerHTML;
-  key.dataset.char = charValue || '';
   key.dataset.key = keyCode || '';
   return key;
 }
 
 function buildArrows(keyboardRow) {
+  const arrowTallEElement = document.createElement('div');
+  arrowTallEElement.className = 'key--arrow--tall';
+  arrowTallEElement.appendChild(buildKey('arrowup', 'key--arrow', '\u25b2'));
+  arrowTallEElement.appendChild(buildKey('arrowdown', 'key--arrow', '\u25bc'));
   keyboardRow.appendChild(buildKey('arrowleft', 'key--arrow', '<span>\u25c0</span>'));
-  keyboardRow.appendChild(buildKey('arrowup', 'key--double key--arrow--tall', '<div>\u25b2</div><div>\u25bc</div>'));
-  keyboardRow.appendChild(buildKey('arrowleft', 'key--arrow', '<span>\u25b6</span>'));
+  keyboardRow.appendChild(arrowTallEElement);
+  keyboardRow.appendChild(buildKey('arrowright', 'key--arrow', '<span>\u25b6</span>'));
 }
 
 function buildRow(row, defaults, shifts) {
@@ -212,11 +266,9 @@ function buildRow(row, defaults, shifts) {
         if (defaultValue !== shifts[i]) {
           keys.className = 'key--double';
           keys.innerHTML = `<div>${shiftValue}</div><div>${defaultValue}</div>`;
-          keys.dataset.char = defaultValue + shiftValue;
         } else {
           keys.className = 'key--letter';
           keys.innerText = defaultValue.toLowerCase();
-          keys.dataset.char = defaultValue.toLowerCase();
         }
     }
     if (key) {
@@ -256,7 +308,7 @@ document.querySelectorAll('.key--double').forEach((key) => {
 });
 
 document.querySelectorAll('.key--letter').forEach((key) => {
-  key.addEventListener('mousedown', keyLetterClick);
+  key.addEventListener('mousedown', keyLetterClickEventHandler);
 });
 
 document.querySelectorAll('.key--word').forEach((key) => {
@@ -270,6 +322,11 @@ document.querySelectorAll('.key--shift').forEach((key) => {
 document.querySelectorAll('.key--shift').forEach((key) => {
   key.addEventListener('mousedown', keyShiftClick);
 });
+
+document.querySelectorAll('.key--arrow').forEach((key) => {
+  key.addEventListener('mousedown', keyArrowClickEventHandler);
+});
+
 
 document.body.addEventListener('keydown', (event) => {
   event.preventDefault();
@@ -297,6 +354,11 @@ document.body.addEventListener('keydown', (event) => {
 
     if (key.classList.contains('key--double')) {
       keyDoubleClick(key);
+      return;
+    }
+
+    if (key.classList.contains('key--arrow')) {
+      keyArrowClick(key);
       return;
     }
 

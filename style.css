@@ -1,14 +1,26 @@
 body {
+  box-sizing: border-box;
   margin: 0;
   padding: 0;
+  background-color: #1d1d1d;
+}
 
-  background-color: #000000;
+body::after {
+  content: "";
+  position: absolute;
+  /* opacity: 0.8; */
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  z-index: -1;
+
+  background: url(pexels-photo-3740725.jpeg);
   background-repeat: no-repeat;
-  background-size: cover;
 }
 
 h1 {
-  padding: 1em 0.5em 0;
+  padding: 0.5em 0.5em 0;
 
   font-size: 1.8em;
   font-family: monospace;
@@ -27,17 +39,17 @@ p {
 
 .textarea {
   display: block;
-  width: 39em;
+  width: 50em;
   height: 10em;
-  margin: 0 auto 25px;
+  margin: 30px auto 30px;
   padding: 10px;
 
   font-size: 18px;
   color: #382c23;
 
-  border-radius: 10px;
+  border: none;
   outline: none;
-  outline-color: #fac7e0;
+  box-shadow: 0 40px 45px rgba(0, 0, 0, 0.4);
 
   resize: none;
 }
@@ -224,7 +236,8 @@ p {
 }
 
 .key--arrow--tall > * {
-  padding-top: 0.2em;
+  margin: auto;
+  padding-top: 1.2em;
 }
 
 .keyboard > .keyboard__row {
