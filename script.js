@@ -331,6 +331,10 @@ document.querySelectorAll('.key--arrow').forEach((key) => {
 document.body.addEventListener('keydown', (event) => {
   event.preventDefault();
 
+  if (event.repeat) {
+    return;
+  }
+
   const key = getKey(event);
   if (key) {
     key.setAttribute('data-pressed', 'on');
