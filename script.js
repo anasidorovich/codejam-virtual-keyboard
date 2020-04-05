@@ -331,14 +331,10 @@ document.querySelectorAll('.key--arrow').forEach((key) => {
 document.body.addEventListener('keydown', (event) => {
   event.preventDefault();
 
-  if (event.repeat) {
-    return;
-  }
-
   const key = getKey(event);
   if (key) {
     key.setAttribute('data-pressed', 'on');
-    if (event.key === 'Shift') {
+    if (event.key === 'Shift' && !event.repeat) {
       shiftPressed = true;
       keyShiftClick();
       return;
@@ -352,7 +348,11 @@ document.body.addEventListener('keydown', (event) => {
     }
 
     if (key.classList.contains('key--word')) {
-      keyClick(key, event.key === 'CapsLock');
+      const capsKey = event.key === 'CapsLock';
+      if (capsKey && event.repeat) {
+        return;
+      }
+      keyClick(key, capsKey);
       return;
     }
 
