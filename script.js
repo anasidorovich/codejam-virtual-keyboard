@@ -26,9 +26,14 @@ class KeyboardTextAreaElement extends HTMLTextAreaElement {
     return this.selectionStart || 0;
   }
 
-  setCaretPosition(position) {
-    if (position > this.value.length || position < 0) {
-      return;
+  setCaretPosition(caretPosition) {
+    const { length } = this.value;
+    let position = caretPosition;
+    if (position > length) {
+      position = length;
+    }
+    if (position < 0) {
+      position = 0;
     }
     this.selectionStart = position;
     this.selectionEnd = position;
@@ -56,7 +61,6 @@ class KeyboardTextAreaElement extends HTMLTextAreaElement {
     this.setCaretPosition(start);
   }
 }
-
 
 customElements.define('kb-textarea', KeyboardTextAreaElement, { extends: 'textarea' });
 
@@ -113,16 +117,28 @@ function keyShiftClick(e) {
   });
 }
 
+function getNextCaretPosition(position, positionShift) {
+  return inputArea.hasSelection() ? position : position + positionShift;
+}
+
 function keyArrowClick(element) {
+  const moveTo = {
+    arrowleft: (position) => {
+      inputArea.setCaretPosition(getNextCaretPosition(position, -1));
+    },
+    arrowright: (position) => {
+      inputArea.setCaretPosition(getNextCaretPosition(position, 1));
+    },
+    arrowdown: (position) => {
+      inputArea.setCaretPosition(0);
+    },
+    arrowup: (position) => {
+      inputArea.setCaretPosition(inputArea.value.length);
+    },
+  };
   const keyCode = parseInt(element.dataset.key, 10);
   const position = inputArea.getCaretPosition();
-  if (keyCode === getKeyCodeList('arrowleft')) {
-    inputArea.setCaretPosition(inputArea.hasSelection() ? position : position - 1);
-  } else if (keyCode === getKeyCodeList('arrowright')) {
-    inputArea.setCaretPosition(inputArea.hasSelection() ? inputArea.selectionEnd : position + 1);
-  } else {
-    inputArea.setValue(element.innerText);
-  }
+  moveTo[getKeyByValue(keyCode)](position);
 }
 
 function keyArrowClickEventHandler(e) {
@@ -201,7 +217,7 @@ function buildKeyboardLayouts() {
 }
 
 function buildKey(keyValue, className, innerHTML) {
-  const keyCode = getKeyCodeList(keyValue);
+  const keyCode = getKeyCode(keyValue);
   const key = document.createElement('div');
   key.className = className;
   key.innerHTML = innerHTML;
@@ -226,7 +242,7 @@ function buildRow(row, defaults, shifts) {
     const keys = document.createElement('div');
     const defaultValue = defaults[i];
     const shiftValue = shifts[i];
-    let key = getKeyCodeList(defaultValue.toLowerCase());
+    let key = getKeyCode(defaultValue.toLowerCase());
     switch (defaultValue) {
       case 'space':
         keys.className = 'key--word key--right key--space';
