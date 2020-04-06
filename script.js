@@ -129,10 +129,10 @@ function keyArrowClick(element) {
     arrowright: (position) => {
       inputArea.setCaretPosition(getNextCaretPosition(position, 1));
     },
-    arrowdown: (position) => {
+    arrowup: (position) => {
       inputArea.setCaretPosition(0);
     },
-    arrowup: (position) => {
+    arrowdown: (position) => {
       inputArea.setCaretPosition(inputArea.value.length);
     },
   };
