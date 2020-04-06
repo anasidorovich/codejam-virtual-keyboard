@@ -1,47 +1,64 @@
-const keyboards = [];
+const keyboards = {
+  englishLayout: null,
+  russianLayout: null,
+};
+
 const currentLanguage = localStorage.getItem('selectedLanguage') || 'en';
+const descriptionTemplate = {
+  name: 'Virtual Keyboard',
+  language: 'Switch Input Language: CTRL + ALT',
+  os: 'Compatible Operating System: Windows 10',
+};
+
+const descriptionHtml = `
+    <h1>${descriptionTemplate.name}</h1>
+    <p>${descriptionTemplate.language}</p>
+    <p>${descriptionTemplate.os}</p>
+`;
 
 let inputArea;
 let capsPressed;
 let shiftPressed;
 let keyLetters;
 
-HTMLTextAreaElement.prototype.getCaretPosition = function () {
-  return this.selectionStart || 0;
-};
-
-HTMLTextAreaElement.prototype.setCaretPosition = function (position) {
-  if (position > this.value.length || position < 0) {
-    return;
+class KeyboardTextAreaElement extends HTMLTextAreaElement {
+  getCaretPosition() {
+    return this.selectionStart || 0;
   }
-  this.selectionStart = position;
-  this.selectionEnd = position;
-  this.focus();
-};
 
-HTMLTextAreaElement.prototype.hasSelection = function () {
-  if (this.selectionStart === this.selectionEnd) {
-    return false;
+  setCaretPosition(position) {
+    if (position > this.value.length || position < 0) {
+      return;
+    }
+    this.selectionStart = position;
+    this.selectionEnd = position;
+    this.focus();
   }
-  return true;
-};
 
-HTMLTextAreaElement.prototype.insertValue = function (start, finish) {
-  this.value = this.value.substring(0, start) + this.value.substring(finish, this.value.length);
-  this.setCaretPosition(start);
-};
-
-HTMLTextAreaElement.prototype.setValue = function (value) {
-  const position = this.getCaretPosition();
-  if (position < this.value.length) {
-    this.value = this.value.substring(0, position) + value
-               + this.value.substring(position, this.value.length);
-    this.setCaretPosition(position + value.length);
-  } else {
-    this.value += value;
-    this.setCaretPosition(this.value.length);
+  hasSelection() {
+    return this.selectionStart !== this.selectionEnd;
   }
-};
+
+  setValue(value) {
+    const position = this.getCaretPosition();
+    if (position < this.value.length) {
+      this.value = this.value.substring(0, position) + value
+                       + this.value.substring(position, this.value.length);
+      this.setCaretPosition(position + value.length);
+    } else {
+      this.value += value;
+      this.setCaretPosition(this.value.length);
+    }
+  }
+
+  insertValue(start, finish) {
+    this.value = this.value.substring(0, start) + this.value.substring(finish, this.value.length);
+    this.setCaretPosition(start);
+  }
+}
+
+
+customElements.define('kb-textarea', KeyboardTextAreaElement, { extends: 'textarea' });
 
 function getKey(e) {
   const { location } = e;
@@ -56,28 +73,12 @@ function getKey(e) {
 }
 
 function setSize() {
-  if (keyboards[0]) {
-    const size = document.body.clientWidth / 110;
-    keyboards.forEach((kb) => {
-      inputArea.style.fontSize = `${size}px`;
-      kb.style.fontSize = `${size}px`;
-    });
-  }
+  const size = document.body.clientWidth / 110;
+  inputArea.style.fontSize = `${size}px`;
+  Object.values(keyboards).forEach((keyboard) => {
+    keyboard.style.fontSize = `${size}px`;
+  });
   return true;
-}
-
-function buildTextarea() {
-  inputArea = document.createElement('textarea');
-  inputArea.id = 'textarea';
-  inputArea.name = 'post';
-  inputArea.cols = 50;
-  inputArea.rows = 5;
-  inputArea.className = 'body--textarea textarea';
-  inputArea.onblur = function () {
-    inputArea.focus();
-  };
-  inputArea.autofocus = true;
-  document.body.append(inputArea);
 }
 
 function keyDoubleClick(e) {
@@ -174,15 +175,27 @@ function keyWordClick(e) {
   keyClick(e, capsKey);
 }
 
-function buildBody() {
-  keyboards[0] = document.createElement('div');
-  keyboards[0].className = `keyboard keyboard_en ${currentLanguage === 'en' ? 'on' : ''}`;
-  keyboards[1] = document.createElement('div');
-  keyboards[1].className = `keyboard keyboard_ru ${currentLanguage === 'ru' ? 'on' : ''}`;
+function init() {
+  document.body.innerHTML = descriptionHtml;
+  inputArea = document.createElement('textarea', { is: 'kb-textarea' });
+  inputArea.name = 'post';
+  inputArea.cols = 50;
+  inputArea.rows = 5;
+  inputArea.className = 'textarea';
+  inputArea.addEventListener('blur', (e) => e.target.focus());
+  inputArea.autofocus = true;
+  document.body.append(inputArea);
+}
+
+function buildKeyboardLayouts() {
+  keyboards.englishLayout = document.createElement('div');
+  keyboards.englishLayout.className = `keyboard keyboard_en ${currentLanguage === 'en' ? 'on' : ''}`;
+  keyboards.russianLayout = document.createElement('div');
+  keyboards.russianLayout.className = `keyboard keyboard_ru ${currentLanguage === 'ru' ? 'on' : ''}`;
   const wrapper = document.createElement('div');
   wrapper.className = 'wrapper';
-  wrapper.appendChild(keyboards[0]);
-  wrapper.appendChild(keyboards[1]);
+  wrapper.appendChild(keyboards.englishLayout);
+  wrapper.appendChild(keyboards.russianLayout);
   document.body.append(wrapper);
   return wrapper;
 }
@@ -285,16 +298,16 @@ function buildRow(row, defaults, shifts) {
 }
 
 function buildHtml() {
-  buildTextarea();
-  keyboardWrapper = buildBody();
+  init();
+  buildKeyboardLayouts();
 
   for (let i = 0; i < 5; i += 1) {
     const defaults = keyboardButtons.defaultLayout[i].split(' ');
     const shifts = keyboardButtons.shiftLayout[i].split(' ');
     const defaultsRu = keyboardButtons.defaultRuLayout[i].split(' ');
     const shiftsRu = keyboardButtons.shiftRuLayout[i].split(' ');
-    keyboards[0].appendChild(buildRow(i, defaults, shifts));
-    keyboards[1].appendChild(buildRow(i, defaultsRu, shiftsRu));
+    keyboards.englishLayout.appendChild(buildRow(i, defaults, shifts));
+    keyboards.russianLayout.appendChild(buildRow(i, defaultsRu, shiftsRu));
   }
 
   keyLetters = document.querySelectorAll('.key--letter');
@@ -341,7 +354,7 @@ document.body.addEventListener('keydown', (event) => {
     }
     if (event.ctrlKey && event.altKey) {
       localStorage.setItem('selectedLanguage', currentLanguage === 'en' ? 'ru' : 'en');
-      keyboards.forEach((keyboard) => {
+      Object.values(keyboards).forEach((keyboard) => {
         keyboard.classList.toggle('on');
       });
       return;
@@ -384,5 +397,6 @@ document.body.addEventListener('keyup', (e) => {
     }
   }
 });
+
 
 window.addEventListener('resize', setSize);

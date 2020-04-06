@@ -5,13 +5,15 @@
   "main": "script.js",
   "dependencies": {},
   "devDependencies": {
+    "@babel/cli": "^7.8.4",
+    "@babel/core": "^7.9.0",
     "eslint": "^6.8.0",
     "eslint-config-airbnb-base": "^14.1.0",
     "eslint-plugin-import": "^2.20.2"
   },
   "scripts": {
     "lint": "eslint keys.js script.js",
-    "lint:fix": "eslint keys.js --fix"
+    "lint:fix": "eslint keys.js script.js --fix"
   },
   "repository": {
     "type": "git",
