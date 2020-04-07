@@ -2,7 +2,7 @@ const keyboards = {
   englishLayout: null,
   russianLayout: null,
 };
-
+const KEYBOARD_ROWS_COUNT = 5;
 const currentLanguage = localStorage.getItem('selectedLanguage') || 'en';
 const descriptionTemplate = {
   name: 'Virtual Keyboard',
@@ -153,16 +153,6 @@ function keyBackSpaceClick() {
   }
 }
 
-function keyClickEventHandler(e) {
-  e.preventDefault();
-  if (e.button !== 2) {
-    const keyTarget = e.target.closest('[data-key]');
-    if (keyTarget) {
-      keyClick(keyTarget);
-    }
-  }
-}
-
 function keyClick(element) {
   if (element.classList.contains('key--capslock')) {
     keyCapsLockClick();
@@ -192,6 +182,16 @@ function keyClick(element) {
     keyArrowClick(element);
   }
   return true;
+}
+
+function keyClickEventHandler(e) {
+  e.preventDefault();
+  if (e.button !== 2) {
+    const keyTarget = e.target.closest('[data-key]');
+    if (keyTarget) {
+      keyClick(keyTarget);
+    }
+  }
 }
 
 function init() {
@@ -240,7 +240,8 @@ function buildArrows(keyboardRow) {
 
 function buildRow(row, defaults, shifts) {
   const keyboardRow = document.createElement('div');
-  keyboardRow.className = row === 4 ? 'keyboard__row keyboard__row--h3' : 'keyboard__row';
+  const lastRow = row === KEYBOARD_ROWS_COUNT - 1;
+  keyboardRow.className = lastRow ? 'keyboard__row keyboard__row--h3' : 'keyboard__row';
   for (let i = 0; i < defaults.length; i += 1) {
     const keys = document.createElement('div');
     const defaultValue = defaults[i];
@@ -250,7 +251,6 @@ function buildRow(row, defaults, shifts) {
       case 'space':
         keys.className = 'key--word key--right key--space';
         keys.innerText = '\u00A0';
-        keys.dataset.char = ' ';
         break;
       case 'shiftleft':
         keys.className = 'key--bottom-left key--word key--w6 key--shift';
@@ -309,7 +309,7 @@ function buildRow(row, defaults, shifts) {
     keyboardRow.appendChild(keys);
   }
 
-  if (row === 4) {
+  if (lastRow) {
     buildArrows(keyboardRow);
   }
 
@@ -320,7 +320,7 @@ function buildHTML() {
   init();
   buildKeyboardLayouts();
 
-  for (let i = 0; i < 5; i += 1) {
+  for (let i = 0; i < KEYBOARD_ROWS_COUNT; i += 1) {
     const defaults = keyboardButtons.defaultLayout[i].split(' ');
     const shifts = keyboardButtons.shiftLayout[i].split(' ');
     const defaultsRu = keyboardButtons.defaultRuLayout[i].split(' ');
@@ -392,9 +392,7 @@ document.body.addEventListener('keyup', (e) => {
   if (key) {
     key.removeAttribute('data-pressed');
     if (e.key === 'Shift') {
-      keyLetters.forEach((letter) => {
-        letter.classList.toggle('keyword_upper');
-      });
+      keyShiftClick();
       shiftPressed = false;
     }
   }
