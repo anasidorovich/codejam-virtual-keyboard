@@ -85,11 +85,7 @@ function setSize() {
   return true;
 }
 
-function keyDoubleClick(e) {
-  const element = e.currentTarget || e;
-  if (e.button === 2) {
-    return;
-  }
+function keyDoubleClick(element) {
   if (shiftPressed) {
     inputArea.setValue(element.children[0].innerText);
   } else {
@@ -101,17 +97,7 @@ function keyLetterClick(element) {
   inputArea.setValue(element.innerText);
 }
 
-function keyLetterClickEventHandler(e) {
-  e.preventDefault();
-  if (e.button !== 2) {
-    keyLetterClick(e.currentTarget);
-  }
-}
-
-function keyShiftClick(e) {
-  if (e && e.button === 2) {
-    return;
-  }
+function keyShiftClick() {
   keyLetters.forEach((letter) => {
     letter.classList.toggle('keyword_upper');
   });
@@ -129,10 +115,10 @@ function keyArrowClick(element) {
     arrowright: (position) => {
       inputArea.setCaretPosition(getNextCaretPosition(position, 1));
     },
-    arrowup: (position) => {
+    arrowup: () => {
       inputArea.setCaretPosition(0);
     },
-    arrowdown: (position) => {
+    arrowdown: () => {
       inputArea.setCaretPosition(inputArea.value.length);
     },
   };
@@ -141,38 +127,51 @@ function keyArrowClick(element) {
   moveTo[getKeyByValue(keyCode)](position);
 }
 
-function keyArrowClickEventHandler(e) {
-  e.preventDefault();
-  if (e.button !== 2) {
-    keyArrowClick(e.currentTarget);
+function keyCapsLockClick() {
+  if (capsPressed) {
+    document.querySelectorAll('.key--capslock').forEach((key) => {
+      key.removeAttribute('data-selected');
+    });
+    capsPressed = false;
+  } else {
+    document.querySelectorAll('.key--capslock').forEach((key) => {
+      key.setAttribute('data-selected', 'on');
+    });
+    capsPressed = true;
+  }
+  keyLetters.forEach((letter) => {
+    letter.classList.toggle('keyword_upper');
+  });
+}
+
+function keyBackSpaceClick() {
+  const start = inputArea.selectionStart;
+  if (inputArea.hasSelection()) {
+    inputArea.insertValue(start, inputArea.selectionEnd);
+  } else {
+    inputArea.insertValue(start - 1, inputArea.getCaretPosition());
   }
 }
 
-function keyClick(e, capsKey) {
-  const element = e.currentTarget || e;
-  if (capsKey) {
-    if (capsPressed) {
-      document.querySelectorAll('.key--capslock').forEach((key) => {
-        key.removeAttribute('data-selected');
-      });
-      capsPressed = false;
-    } else {
-      document.querySelectorAll('.key--capslock').forEach((key) => {
-        key.setAttribute('data-selected', 'on');
-      });
-      capsPressed = true;
+function keyClickEventHandler(e) {
+  e.preventDefault();
+  if (e.button !== 2) {
+    const keyTarget = e.target.closest('[data-key]');
+    if (keyTarget) {
+      keyClick(keyTarget);
     }
-    keyLetters.forEach((letter) => {
-      letter.classList.toggle('keyword_upper');
-    });
+  }
+}
+
+function keyClick(element) {
+  if (element.classList.contains('key--capslock')) {
+    keyCapsLockClick();
   }
   if (element.classList.contains('key--backspace')) {
-    const start = inputArea.selectionStart;
-    if (inputArea.hasSelection()) {
-      inputArea.insertValue(start, inputArea.selectionEnd);
-    } else {
-      inputArea.insertValue(start - 1, inputArea.getCaretPosition());
-    }
+    keyBackSpaceClick();
+  }
+  if (element.classList.contains('key--shift')) {
+    keyShiftClick(element);
   }
   if (element.classList.contains('key--enter')) {
     inputArea.setValue('\n');
@@ -183,12 +182,16 @@ function keyClick(e, capsKey) {
   if (element.classList.contains('key--space')) {
     inputArea.setValue(' ');
   }
+  if (element.classList.contains('key--letter')) {
+    keyLetterClick(element);
+  }
+  if (element.classList.contains('key--double')) {
+    keyDoubleClick(element);
+  }
+  if (element.classList.contains('key--arrow')) {
+    keyArrowClick(element);
+  }
   return true;
-}
-
-function keyWordClick(e) {
-  const capsKey = e.currentTarget.classList.contains('key--capslock');
-  keyClick(e, capsKey);
 }
 
 function init() {
@@ -313,7 +316,7 @@ function buildRow(row, defaults, shifts) {
   return keyboardRow;
 }
 
-function buildHtml() {
+function buildHTML() {
   init();
   buildKeyboardLayouts();
 
@@ -330,32 +333,15 @@ function buildHtml() {
   setSize();
 }
 
-buildHtml();
+buildHTML();
 
-document.querySelectorAll('.key--double').forEach((key) => {
-  key.addEventListener('click', keyDoubleClick);
-});
-
-document.querySelectorAll('.key--letter').forEach((key) => {
-  key.addEventListener('mousedown', keyLetterClickEventHandler);
-});
-
-document.querySelectorAll('.key--word').forEach((key) => {
-  key.addEventListener('click', keyWordClick);
+document.querySelectorAll('.keyboard').forEach((kb) => {
+  kb.addEventListener('mousedown', keyClickEventHandler);
 });
 
 document.querySelectorAll('.key--shift').forEach((key) => {
   key.addEventListener('mouseup', keyShiftClick);
 });
-
-document.querySelectorAll('.key--shift').forEach((key) => {
-  key.addEventListener('mousedown', keyShiftClick);
-});
-
-document.querySelectorAll('.key--arrow').forEach((key) => {
-  key.addEventListener('mousedown', keyArrowClickEventHandler);
-});
-
 
 document.body.addEventListener('keydown', (event) => {
   event.preventDefault();
@@ -381,7 +367,7 @@ document.body.addEventListener('keydown', (event) => {
       if (capsKey && event.repeat) {
         return;
       }
-      keyClick(key, capsKey);
+      keyClick(key);
       return;
     }
 
@@ -413,6 +399,5 @@ document.body.addEventListener('keyup', (e) => {
     }
   }
 });
-
 
 window.addEventListener('resize', setSize);
