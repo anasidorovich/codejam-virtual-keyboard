@@ -1,0 +1,311 @@
+body {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+
+  background-color: #1d1d1d;
+}
+
+h1 {
+  padding: 0.5em 0.5em 0;
+
+  font-size: 1.8em;
+  font-family: monospace;
+  text-align: center;
+  color: #ffffff;
+
+  animation-name: example;
+  animation-duration: 1s;
+  animation-iteration-count: infinite;
+}
+
+@keyframes example {
+  0% {
+    color: lime;
+    text-shadow: 0 0 20px green;
+  }
+  25% {
+    color: green;
+    text-shadow: 2px 2px 2px lime;
+
+    transform: translate(-2px, 1px);
+  }
+  40% {
+    color: lime;
+    text-shadow: none;
+
+    transform: translate(0, 0);
+  }
+  50% {
+    color: green;
+    text-shadow: 5px 5px 2px blue, -5px -5px 2px red;
+
+    transform: translate(0px, 5px);
+  }
+  70% {
+    color: lime;
+    text-shadow: none;
+
+    transform: translate(0, 0);
+  }
+  80% {
+    color: lime;
+    text-shadow: 0 0 20px green;
+
+    transform: translate(-2px, 1px);
+  }
+  100% {
+    color: lime;
+    text-shadow: none;
+  }
+}
+
+p {
+  font-size: 1em;
+  font-family: monospace;
+  text-align: center;
+  color: #ffffff;
+}
+
+.textarea {
+  display: block;
+  width: 50em;
+  height: 10em;
+  margin: 30px auto 30px;
+  padding: 10px;
+
+  font-size: 18px;
+  color: #382c23;
+
+  border: none;
+  outline: none;
+  box-shadow: 0 40px 45px rgba(0, 0, 0, 0.4);
+
+  resize: none;
+}
+
+.keyboard {
+  display: none;
+  flex-direction: column;
+  align-items: center;
+  width: 55.1em;
+  height: auto;
+  margin: auto;
+  padding: 30px 15px;
+
+  font: 28px arial;
+  font-size: 14px;
+  text-align: center;
+
+  background: #272b2c;
+  border-radius: 10px;
+  box-shadow: 0 40px 45px rgba(0, 0, 0, 0.4);
+}
+
+.keyboard.on {
+  display: flex;
+}
+
+.keyboard__row {
+  display: inline-block;
+  height: 3em;
+  margin: 0.2em;
+}
+
+.keyboard__row--h1 {
+  height: 1.7em;
+
+  line-height: 1.4em;
+}
+
+.keyboard__row--h3 {
+  height: 3.3em;
+}
+
+.keyboard__row > *,
+.key--arrow {
+  position: relative;
+
+  float: left;
+  box-sizing: border-box;
+  width: 3.3em;
+  height: 100%;
+  margin: 0.2em;
+  padding: 0.2em;
+
+  text-align: center;
+  color: #71d4fe;
+
+  background: #ffffff;
+  background: #2f3336;
+  border-radius: 1em;
+  box-shadow: 0 3px 3px rgba(0, 0, 0, 0.7);
+  cursor: pointer;
+
+  -webkit-user-select: none;
+}
+
+.keyboard__row > *:hover,
+.key--arrow--tall .key--arrow:hover {
+  text-shadow: 1px 2px 60px #00bcd4, 0 0 60px rgba(0, 188, 212, 0.9), 0 0 60px rgba(0, 188, 212, 0.9), 10px 10px 60px rgba(0, 188, 212, 0.9);
+
+  background: #2f3336;
+  border: 1px solid #00d7c3;
+  box-shadow: 0 0 10px 0 #00d7c3 inset, 0 0 10px 1px #00d7c3;
+  cursor: pointer;
+}
+
+
+.keyboard__row > * span {
+  padding: 0.3em;
+}
+
+.keyboard__row > *:active,
+.key--arrow:active {
+  transform: scale(0.9);
+}
+
+.keyboard__row > .key--arrow--tall:active {
+  transform: none;
+}
+
+.keyboard__row--h1 > div {
+  width: 3.5em;
+}
+
+.keyboard__row > div[data-selected] {
+  border: 1px solid #00d7c3;
+  box-shadow: 0 0 10px 0 #00d7c3 inset, 0 0 10px 1px #00d7c3;
+}
+
+.keyboard__row > div[data-pressed],
+.keyboard__row > div:active,
+.key--arrow--tall > div[data-pressed],
+.key--arrow--tall > div:active {
+  position: relative;
+  top: 0.2em;
+
+  border: 1px solid #00d7c3;
+  box-shadow: 0 0 10px 0 #00d7c3 inset, 0 0 10px 1px #00d7c3;
+}
+
+.keyboard__row > .key--arrow--tall[data-pressed],
+.keyboard__row > .key--arrow--tall:active,
+.keyboard__row > .key--arrow--tall:hover {
+  top: 0;
+
+  border: none;
+  box-shadow: none;
+  cursor: default;
+}
+
+.key--double > div[data-layout] {
+  display: none;
+}
+
+.key--w3 {
+  width: 4.6em;
+}
+
+.key--w4 {
+  width: 6em;
+}
+
+.key--w5 {
+  width: 6.5em;
+}
+
+.key--w6 {
+  width: 8.4em;
+}
+
+.key--space {
+  width: 18em;
+}
+
+.key--double > * {
+  padding-top: 0.1em;
+}
+
+.key--letter {
+  line-height: 2.8em;
+}
+
+.key--bottom-left > * {
+  position: absolute;
+  bottom: 0.4em;
+  left: 0.4em;
+
+  text-align: left;
+}
+
+.key--bottom-right > * {
+  position: absolute;
+  right: 0.4em;
+  bottom: 0.4em;
+
+  text-align: right;
+}
+
+.key--fn > * {
+  float: right;
+  padding-top: 1.2em;
+  padding-right: 0.2em;
+
+  font-size: 0.6em;
+  line-height: 1em;
+  text-align: right;
+}
+
+.key--word > * {
+  font-size: 0.8em;
+}
+
+.key--letter.keyword_upper {
+  text-transform: uppercase;
+}
+
+.keyboard__row > .key--arrow--tall {
+  display: flex;
+  flex-direction: column;
+  width: 3em;
+  padding: 0;
+
+  text-shadow: none;
+
+  background: none;
+  border: none;
+  box-shadow: none;
+}
+
+.key--arrow--tall > *,
+.key--arrow > * {
+  font-size: 0.5em;
+  line-height: 3em;
+}
+
+.key--arrow {
+  width: 3.1em;
+  height: 1.8em;
+  margin-top: 1.7em;
+
+  line-height: 0.5em;
+}
+
+.key--arrow--tall > * {
+  width: 100%;
+  height: 45%;
+  margin: auto;
+  padding-top: 1.3em;
+
+  border-radius: 2em 2em 1em 1em;
+}
+.key--arrow--tall .key--arrow:nth-child(2) {
+  padding-top: 1.2em;
+
+  border-radius: 1em 1em 2em 2em ;
+}
+
+.keyboard > .keyboard__row {
+  text-align: center;
+}
