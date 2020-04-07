@@ -97,10 +97,17 @@ function keyLetterClick(element) {
   inputArea.setValue(element.innerText);
 }
 
-function keyShiftClick() {
+function toggleLettersUpperCase() {
   keyLetters.forEach((letter) => {
     letter.classList.toggle('keyword_upper');
   });
+}
+
+function keyShiftClickHandler(e) {
+  e.preventDefault();
+  if (e.button !== 2) {
+    toggleLettersUpperCase();
+  }
 }
 
 function getNextCaretPosition(position, positionShift) {
@@ -139,9 +146,7 @@ function keyCapsLockClick() {
     });
     capsPressed = true;
   }
-  keyLetters.forEach((letter) => {
-    letter.classList.toggle('keyword_upper');
-  });
+  toggleLettersUpperCase();
 }
 
 function keyBackSpaceClick() {
@@ -161,7 +166,7 @@ function keyClick(element) {
     keyBackSpaceClick();
   }
   if (element.classList.contains('key--shift')) {
-    keyShiftClick(element);
+    toggleLettersUpperCase();
   }
   if (element.classList.contains('key--enter')) {
     inputArea.setValue('\n');
@@ -340,7 +345,7 @@ document.querySelectorAll('.keyboard').forEach((kb) => {
 });
 
 document.querySelectorAll('.key--shift').forEach((key) => {
-  key.addEventListener('mouseup', keyShiftClick);
+  key.addEventListener('mouseup', keyShiftClickHandler);
 });
 
 document.body.addEventListener('keydown', (event) => {
@@ -351,7 +356,7 @@ document.body.addEventListener('keydown', (event) => {
     key.setAttribute('data-pressed', 'on');
     if (event.key === 'Shift' && !event.repeat) {
       shiftPressed = true;
-      keyShiftClick();
+      toggleLettersUpperCase();
       return;
     }
     if (event.ctrlKey && event.altKey) {
@@ -392,7 +397,7 @@ document.body.addEventListener('keyup', (e) => {
   if (key) {
     key.removeAttribute('data-pressed');
     if (e.key === 'Shift') {
-      keyShiftClick();
+      toggleLettersUpperCase();
       shiftPressed = false;
     }
   }
